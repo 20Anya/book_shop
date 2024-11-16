@@ -79,17 +79,17 @@ for line in file_content:
     if line['model'] == 'publisher':
         pub = Publisher(id=line['pk'], name=line['fields']['name'])
         session.add(pub)
-    if line['model'] == 'book':
+    elif line['model'] == 'book':
         book = Book(id=line['pk'], title=line['fields']['title'], id_publisher=line['fields']['id_publisher'])
         session.add(book)
-    if line['model'] == 'shop':
+    elif line['model'] == 'shop':
         shop = Shop(id=line['pk'], name=line['fields']['name'])
         session.add(shop)
-    if line['model'] == 'stock':
+    elif line['model'] == 'stock':
         stock = Stock(id=line['pk'], id_shop=line['fields']['id_shop'], id_book=line['fields']['id_book'],
                       count=line['fields']['count'])
         session.add(stock)
-    if line['model'] == 'sale':
+    elif line['model'] == 'sale':
         sale = Sale(id=line['pk'], price=line['fields']['price'], date_sale=line['fields']['date_sale'],
                     count=line['fields']['count'], id_stock=line['fields']['id_stock'])
         session.add(sale)
