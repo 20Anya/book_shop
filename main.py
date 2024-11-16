@@ -98,19 +98,24 @@ for line in file_content:
     session.commit()
 
 
-search = str(input('Введите 1 для поиска по id издателя. Введите 2 для поиска по имени издателя: '))
+def get_shops():
+    publisher_input = input("Введите имя или ID издателя: ")
 
-if search == '1':
-    req = str(input('Введите id издателя: '))
-    for q in session.query(Shop).join(Stock.shop).join(Stock.book).join(Book.publisher).filter(Publisher.id ==
-                                                                                               req).all():
-        print(q)
+    if publisher_input.isdigit():
+        publisher_id = int(publisher_input)
+        results = (session.query(Book.title,
+                                Shop.name,
+                                Sale.price,
+                                Sale.date_sale).join(Stock,
+                                Book.id == Stock.book_id).filter(
+            Book.publisher_id == publisher_id).all())
+    else:
+        results = session.query(Book.title,
+                                Shop.name,
+                                Sale.price,
+                                Sale.date_sale).join(Stock,
+                                Book.id == Stock.book_id).join(
+            Publisher, Book.publisher_id == Publisher.id).filter(Publisher.name == publisher_input).all()
 
-if search == '2':
-    req = str(input('Введите имя издателя: '))
-    for q in session.query(Shop).join(Stock.shop).join(Stock.book).join(Book.publisher).filter(Publisher.name ==
-                                                                                               req).all():
-        print(q)
-
-else:
-    print('Введены некорректные данные, либо издатель не существует')
+    for title, store, price, date in results:
+        print(f"{title:<40} | {store: <10} | {price: <8} | {date.strftime('%d-%m-%Y')}")
