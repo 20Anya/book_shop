@@ -107,15 +107,22 @@ def get_shops():
                                 Shop.name,
                                 Sale.price,
                                 Sale.date_sale).join(Stock,
-                                Book.id == Stock.book_id).filter(
+                                Book.id == Stock.book_id).join(Publisher,
+                                Book.publisher_id == Publisher.id).join(Shop, 
+                                Stock.shop_id == Shop.id).join(Sale,
+                                Stock.id == Sale.stock_id).filter(
             Book.publisher_id == publisher_id).all())
     else:
         results = session.query(Book.title,
                                 Shop.name,
                                 Sale.price,
                                 Sale.date_sale).join(Stock,
-                                Book.id == Stock.book_id).join(
-            Publisher, Book.publisher_id == Publisher.id).filter(Publisher.name == publisher_input).all()
+                                Book.id == Stock.book_id).join(Publisher,
+                                Book.publisher_id == Publisher.id).join(Shop, 
+                                Stock.shop_id == Shop.id).join(Sale,
+                                Stock.id == Sale.stock_id).filter(Publisher.name == publisher_input).all()
 
     for title, store, price, date in results:
         print(f"{title:<40} | {store: <10} | {price: <8} | {date.strftime('%d-%m-%Y')}")
+
+get_shops()
